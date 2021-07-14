@@ -1,8 +1,11 @@
-import 'package:bmi_calculator/reusable_card.dart';
+import 'package:bmi_calculator/calculator.dart';
+import 'package:bmi_calculator/components/icon_content.dart';
+import 'package:bmi_calculator/constant.dart';
+import 'package:bmi_calculator/screens/results_page.dart';
+import 'package:bmi_calculator/components/reusable_card.dart';
+import 'package:bmi_calculator/components/round_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'icon_content.dart';
-import 'constant.dart';
 
 enum Gender {
   male,
@@ -127,7 +130,6 @@ class _InputPageState extends State<InputPage> {
                         min: 120.0,
                         max: 220.0,
                         onChanged: (double newValue) {
-                          print(newValue);
                           setState(() {
                             height = newValue.round();
                           });
@@ -228,17 +230,34 @@ class _InputPageState extends State<InputPage> {
                 ],
               ),
             ),
-            Container(
-              color: kbottomContainerColor,
-              margin: EdgeInsets.only(top: 10.0),
-              width: double.infinity,
-              height: kbottomContainerHeight,
-              child: Center(
-                child: Text(
-                  'CALCULATE YOUR BMI',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
+            GestureDetector(
+              onTap: () {
+                CalculatorBrain calc =
+                    CalculatorBrain(height: height, weight: weight);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ResultsPage(
+                      bmiResult: calc.calculateBMI(),
+                      interpretation: calc.getInterpretation(),
+                      resultText: calc.getResult(),
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.only(bottom: 20.0),
+                color: kbottomContainerColor,
+                margin: EdgeInsets.only(top: 10.0),
+                width: double.infinity,
+                height: kbottomContainerHeight,
+                child: Center(
+                  child: Text(
+                    'CALCULATE',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -246,30 +265,6 @@ class _InputPageState extends State<InputPage> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class RoundIconButton extends StatelessWidget {
-  RoundIconButton({required this.icon, required this.onPressed});
-
-  final IconData icon;
-  final Function onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return RawMaterialButton(
-      child: Icon(icon),
-      onPressed: () {
-        onPressed();
-      },
-      shape: CircleBorder(),
-      fillColor: Color(0xFF4C4F5E),
-      constraints: BoxConstraints.tightFor(
-        width: 56.0,
-        height: 56.0,
-      ),
-      elevation: 6.0,
     );
   }
 }
